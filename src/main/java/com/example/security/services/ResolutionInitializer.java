@@ -2,7 +2,9 @@ package com.example.security.services;
 
 import com.example.security.entities.Resolution;
 import com.example.security.entities.User;
+import com.example.security.entities.UserPersonalInfo;
 import com.example.security.repositories.ResolutionRepository;
+import com.example.security.repositories.UserPersonalInfoRepository;
 import com.example.security.repositories.UserRepository;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,18 +18,20 @@ public class ResolutionInitializer implements SmartInitializingSingleton {
 	private final UserRepository users;
 	private final ResolutionRepository resolutions;
 	private final PasswordEncoder passwordEncoder;
+	private final UserPersonalInfoRepository userPersonalInfoRepository;
 
-	public ResolutionInitializer(UserRepository users,
-                                 ResolutionRepository resolutions,
-                                 PasswordEncoder passwordEncoder) {
+	public ResolutionInitializer(UserRepository users, ResolutionRepository resolutions, PasswordEncoder passwordEncoder, UserPersonalInfoRepository userPersonalInfoRepository) {
 		this.users = users;
 		this.resolutions = resolutions;
 		this.passwordEncoder = passwordEncoder;
+		this.userPersonalInfoRepository = userPersonalInfoRepository;
 	}
 
-	@Override
+
+		@Override
 	@Transactional
 	public void afterSingletonsInstantiated() {
+
 		Long joshId = 2L;
 		Long carolId = 1L;
 
@@ -49,6 +53,14 @@ public class ResolutionInitializer implements SmartInitializingSingleton {
 		User carol =new User(carolId, "carol", carolPassword);
 		carol.addAuthority("READ");
 		carol.addAuthority("WRITE");
+		carol.addAuthority("ADMIN");
+		UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+		userPersonalInfo.setEmail("carol@gmail.com");
+		userPersonalInfo.setFirstName("carol");
+		userPersonalInfo.setLastName("carol");
+		userPersonalInfo.setPhoneNumber("07888888888");
+		carol.setUserPersonalInfo(userPersonalInfo);
+
 
 		this.save(josh);
 		this.save(carol);

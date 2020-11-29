@@ -1,16 +1,20 @@
 package com.example.security.entities;
 
 import com.example.security.entities.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
-@Entity(name="authorities")
+@Entity(name="userAuthorities")
+@Table(name = "userAuthorities")
 public class UserAuthority {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id")
+	@JsonIgnore
 	User user;
 
 	@Column

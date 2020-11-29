@@ -2,28 +2,43 @@ package com.example.security.entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 
-@Entity(name="users")
+@Entity()
+@Table(name="user")
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 
-	@Column
+	@Column (unique = true, nullable = false)
     String username;
 
-	@Column
+	@Column (nullable = false)
     String password;
 
 	@Column
     Boolean enabled = true;
 
-	@OneToMany(cascade=ALL, fetch=EAGER)
-    List<UserAuthority> userAuthorities = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade=ALL, fetch=EAGER)
+	Set<UserAuthority> userAuthorities = new HashSet<>();
+
+	@OneToOne(cascade = ALL)
+	@JoinColumn(name = "user_personal_info_id")
+	private UserPersonalInfo userPersonalInfo;
+
+	public UserPersonalInfo getUserPersonalInfo() {
+		return userPersonalInfo;
+	}
+
+	public void setUserPersonalInfo(UserPersonalInfo userPersonalInfo) {
+		this.userPersonalInfo = userPersonalInfo;
+	}
 
 	public User() {}
 
@@ -38,8 +53,10 @@ public class User {
 		this.username = user.username;
 		this.password = user.password;
 		this.enabled = user.enabled;
-		this.userAuthorities = new ArrayList<>(user.userAuthorities);
+		this.userAuthorities = new HashSet<>(user.getUserAuthorities());
 	}
+
+
 
 	public Long getId() {
 		return id;
@@ -73,11 +90,11 @@ public class User {
 		this.enabled = enabled;
 	}
 
-	public List<UserAuthority> getUserAuthorities() {
+	public Set<UserAuthority> getUserAuthorities() {
 		return userAuthorities;
 	}
 
-	public void setUserAuthorities(List<UserAuthority> userAuthorities) {
+	public void setUserAuthorities(Set<UserAuthority> userAuthorities) {
 		this.userAuthorities = userAuthorities;
 	}
 
