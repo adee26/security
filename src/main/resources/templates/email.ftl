@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Sending Email with Freemarker HTML Template Example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <#--    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">-->
+    <!-- use the font -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 48px;
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0;">
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
+    <tr>
+        <td align="center" bgcolor="#5F9EA0" style="padding: 40px 0 30px 0;">
+            <img src="cid=logo"  style="display: block;" />
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#7FFFD4" style="padding: 40px 30px 40px 30px;">
+            <p>Dear ${name},</p>
+            <p>Your account was created.</p>
+            <p>Click here to verify your email:</p>
+            <p> <a href= http://localhost:8080/activation/${name}> </a> http://localhost:8080/activation/${name} </p>
+            <p>Thanks!</p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

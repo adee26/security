@@ -2,22 +2,31 @@ package com.example.security.controllers;
 
 import com.example.security.dto.UserDTO;
 import com.example.security.entities.User;
+import com.example.security.model.MailModel;
+import com.example.security.repositories.UserRepository;
 import com.example.security.services.UserService;
+import freemarker.template.TemplateException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController {
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
+
     @PostMapping("/user")
-    public User saveUser(@RequestBody User user){
+    public User saveUser( @RequestBody User user) throws MessagingException, IOException, TemplateException {
         return userService.createUser(user);
     }
 
@@ -44,6 +53,16 @@ public class UserController {
     @GetMapping("/user/{id}")
     public UserDTO findByIdUser(@PathVariable Long id){
         return userService.findByIdUser(id);
+    }
+
+    @GetMapping("user/{username}")
+    public Optional<User> activateUser(@PathVariable String username){
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isPresent()){
+            User user1 = user.get();
+            user1.setEnabled(true);
+        }
+        return user;
     }
 
 }

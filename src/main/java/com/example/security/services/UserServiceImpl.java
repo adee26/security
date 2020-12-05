@@ -2,17 +2,23 @@ package com.example.security.services;
 
 import com.example.security.dto.UserDTO;
 import com.example.security.entities.User;
-import com.example.security.entities.UserAuthority;
+import com.example.security.model.MailModel;
 import com.example.security.repositories.UserPersonalInfoRepository;
 import com.example.security.repositories.UserRepository;
+import com.example.security.services.mailService.MailService;
 import com.example.security.utils.DTOMapper;
+import com.example.security.utils.EmailTemplate;
+import freemarker.template.TemplateException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -20,18 +26,35 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserPersonalInfoRepository userPersonalInfoRepository;
+    private final MailService mailService;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, UserPersonalInfoRepository userPersonalInfoRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, UserPersonalInfoRepository userPersonalInfoRepository, MailService mailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userPersonalInfoRepository = userPersonalInfoRepository;
+        this.mailService = mailService;
+    }
+
+    private MailModel createMailModelForCreateUser(User user){
+        MailModel mailModel = new MailModel();
+        mailModel.setTo(user.getUserPersonalInfo().getEmail());
+        HashMap <String, String> content = new HashMap<>();
+        content.put("name", user.getUsername());
+        mailModel.setContent(content);
+        mailModel.setTemplate(EmailTemplate.REGISTER);
+        mailModel.setName(user.getUsername());
+        mailModel.setSubject("Activation email");
+        return mailModel;
     }
 
     @Override
-    public User createUser(User user) {
+    public User createUser(User user) throws MessagingException, IOException, TemplateException {
         String password = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(password);
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        MailModel mailModel = createMailModelForCreateUser(user);
+        mailService.send(mailModel);
+        return savedUser;
     }
 
     @Override

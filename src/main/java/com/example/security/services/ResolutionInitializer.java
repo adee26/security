@@ -54,6 +54,7 @@ public class ResolutionInitializer implements SmartInitializingSingleton {
 		carol.addAuthority("READ");
 		carol.addAuthority("WRITE");
 		carol.addAuthority("ADMIN");
+		carol.setEnabled(true);
 		UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
 		userPersonalInfo.setEmail("carol@gmail.com");
 		userPersonalInfo.setFirstName("carol");
