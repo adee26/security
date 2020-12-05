@@ -24,10 +24,10 @@
     </tr>
     <tr>
         <td bgcolor="#7FFFD4" style="padding: 40px 30px 40px 30px;">
-            <p>Dear ${name},</p>
-            <p>Your account was created.</p>
-            <p>Click here to verify your email:</p>
-            <p> <a href= http://localhost:8080/activation/${name}> </a> http://localhost:8080/activation/${name} </p>
+            <p>Dear ${firstname} ${lastname}, </p>
+            <p>Your account, ${username}, has been created.</p>
+            <p>Please click on the following link to activate your account: </p>
+            <p> <a href= http://localhost:8080/activation/${uuid}> </a> http://localhost:8080/activation/${uuid} </p>
             <p>Thanks!</p>
         </td>
     </tr>

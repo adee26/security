@@ -13,6 +13,7 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class UserController {
@@ -55,14 +56,24 @@ public class UserController {
         return userService.findByIdUser(id);
     }
 
-    @GetMapping("user/{username}")
-    public Optional<User> activateUser(@PathVariable String username){
-        Optional<User> user = userRepository.findByUsername(username);
-        if(user.isPresent()){
-            User user1 = user.get();
-            user1.setEnabled(true);
-        }
-        return user;
+    @GetMapping("activation/{uuid}")
+    public String activateUser(@PathVariable String uuid){
+       Optional<User> user = userRepository.findUserByuuid(uuid);
+       if(user.isPresent()){
+           User user1 = user.get();
+           if(user1.getEnabled() == false){
+               user1.setEnabled(true);
+               user1.setUuid(null);
+               userRepository.save(user1);
+               return "Your account was activated!";
+           }else{
+                return "This username has already been activated!";
+           }
+       }else{
+          return "Invalid activation code.";
+       }
+
     }
+
 
 }

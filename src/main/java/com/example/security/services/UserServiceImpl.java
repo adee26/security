@@ -39,7 +39,10 @@ public class UserServiceImpl implements UserService{
         MailModel mailModel = new MailModel();
         mailModel.setTo(user.getUserPersonalInfo().getEmail());
         HashMap <String, String> content = new HashMap<>();
-        content.put("name", user.getUsername());
+        content.put("uuid", user.getUuid().toString());
+        content.put("firstname", user.getUserPersonalInfo().getFirstName());
+        content.put("lastname", user.getUserPersonalInfo().getLastName());
+        content.put("username", user.getUsername());
         mailModel.setContent(content);
         mailModel.setTemplate(EmailTemplate.REGISTER);
         mailModel.setName(user.getUsername());

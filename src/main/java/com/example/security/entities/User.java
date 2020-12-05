@@ -1,10 +1,9 @@
 package com.example.security.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
@@ -14,16 +13,21 @@ import static javax.persistence.FetchType.EAGER;
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	private Long id;
 
 	@Column (unique = true, nullable = false)
-    String username;
+    private String username;
 
 	@Column (nullable = false)
-    String password;
+    private String password;
 
 	@Column
-    Boolean enabled = false;
+    private Boolean enabled = false;
+
+	@Column
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	private String uuid = UUID.randomUUID().toString();
 
 	@OneToMany(mappedBy = "user", cascade=ALL, fetch=EAGER)
 	Set<UserAuthority> userAuthorities = new HashSet<>();
@@ -100,5 +104,13 @@ public class User {
 
 	public void addAuthority(String authority) {
 		this.userAuthorities.add(new UserAuthority(this, authority));
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 }
